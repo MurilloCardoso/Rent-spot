@@ -10,3 +10,9 @@
     font-weight: 500px;
     font-size: 21px;
 }
+.button:hover{
+    cursor: pointer;
+      background: #0a7ed1;
+      color: #dce4e9;
+}
+
