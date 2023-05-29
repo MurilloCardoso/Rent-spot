@@ -1,0 +1,110 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100&family=Saira+Condensed:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200&family=Roboto:wght@100&family=Saira+Condensed:wght@300&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-family: "Saira Condensed", sans-serif;
+}
+
+.compenetCarosel {
+
+    max-width: 75vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.compenetCarosel .carosel {
+    display: flex;
+    align-items: center;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+
+.compenetCarosel .carosel::-webkit-scrollbar {
+    display: none;
+}
+
+.compenetCarosel .carosel .item {
+
+    margin: 10px;
+    padding: 10px;
+    width: 190px;
+    height: 150px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    
+    justify-content: end;
+    flex: none;
+}
+
+.compenetCarosel .carosel .item .divImage {
+    text-align: center;
+    font-size: 40px;
+}
+
+
+
+.compenetCarosel .carosel .item .information {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.compenetCarosel .carosel .item .information span {
+    display: block;
+    text-align: center;
+    color: #1e1e1e;
+    padding: 5px;
+    border-radius: 10px;
+    height: 7vh;
+}
+
+.compenetCarosel .carosel .item .information .nameOfProduct {
+    font-size: 1.2rem;
+    font-weight: bold;
+  
+}
+
+.compenetCarosel .carosel .item .information .oldPrice {
+    font-size: 1rem;
+    text-decoration: line-through;
+    flex-grow: 1;
+    color: #e81a5d;
+}
+
+.compenetCarosel .carosel .item .information .salePrice {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    height: 5vh;
+    background-color: #00a8fb;
+}
+
+.compenetCarosel .Scrool {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.compenetCarosel .Left {
+    transform: rotate(180deg);
+    
+}

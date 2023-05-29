@@ -11,7 +11,8 @@ function Header() {
       <nav className="nav">
         <img src={img} className='logo'></img>
  
-        <div className="buttons-container">    <BiHelpCircle id='icon'/>
+        <div className="buttons-container">    
+        <BiHelpCircle id='icon'/>
         <Link to="/cadastro">
           <ButtonPrimary className="button" text={"Registrar"}></ButtonPrimary> 
         </Link>  
