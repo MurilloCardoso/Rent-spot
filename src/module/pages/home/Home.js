@@ -1,33 +1,39 @@
 import "./homeStyle.css";
 import ListTile from "../../components/ListTIle/ListTile";
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
 function Home() {
   const [Testes, setTestes] = useState([
     {
       autor: "Murillo",
       quantidadePerguntas: 5,
-      nomeTeste: "Historia"
+      nomeTeste: "Historia",
     },
     {
       autor: "Marcio",
       quantidadePerguntas: 10,
-      nomeTeste: "Matematica"
+      nomeTeste: "Matematica",
     },
     {
       autor: "Mateus",
       quantidadePerguntas: 50,
-      nomeTeste: "Ciência"
-    }
+      nomeTeste: "Ciência",
+    },
+    {
+      autor: "Mateus",
+      quantidadePerguntas: 50,
+      nomeTeste: "Ciência",
+    },
   ]);
 
   return (
-    <div className="main">
-      <h1>home</h1>
-      <main className="main">
+    <div>
+      <main className="main-home">
         <section className="top-teste">
           <div>
-            <ListTile title={"Criar Teste"} open={true} />
+            <Link to="/criarTeste">
+              <ListTile title={"Criar Teste"} open={true} />
+            </Link>
           </div>
           <div>
             <ListTile title={"Resultados"} open={true} />
@@ -35,7 +41,6 @@ function Home() {
         </section>
         <section>
           <div>
-      
             {Testes.map((teste, index) => (
               <ListTile
                 key={index}
@@ -43,7 +48,6 @@ function Home() {
                 subtitle={teste.autor}
                 open={false}
                 trailing={true}
-                
                 leading={true}
               />
             ))}

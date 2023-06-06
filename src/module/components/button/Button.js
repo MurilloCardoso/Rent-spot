@@ -1,9 +1,10 @@
-import './ButtonsStyle.css';
+import "./ButtonsStyle.css";
 
-
-function ButtonPrimary({ text }) {
+function ButtonPrimary(props) {
   return (
-    <button className="button">{text}</button>
+    <button className="button" onClick={props.event}>
+      {props.text}
+    </button>
   );
 }
 

@@ -1,0 +1,19 @@
+.top-teste {
+  display: flex;
+}
+#carrousel-group {
+  background: white;
+}
+.main-home {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("https://wallpaperaccess.com/full/1261646.jpg");
+  background-size: cover;
+  position: relative;
+}

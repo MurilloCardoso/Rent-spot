@@ -1,0 +1,14 @@
+.form-perguntas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#itens-perguntas-group {
+  display: flex;
+
+  align-items: center;
+  margin-bottom: 10px;
+}
+#itens-perguntas-group label {
+  margin-right: 10px;
+}
