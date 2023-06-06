@@ -99,7 +99,31 @@ app.post("/inserirDados", async (req, res) => {
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
+app.post("/inserirTeste",async(req,res)=>{
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    console.log("Conectado ao servidor MongoDB");
 
+
+    const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
+console.log(data);
+    // Fechar a conexão com o servidor MongoDB
+    mongoose.connection.close();
+
+    res.status(200).json({
+      message: "Conexão estabelecida e operações realizadas com sucesso.",
+    });
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+});
 app.get("/lerDados", async (req, res) => {
   console.log("awd");
 

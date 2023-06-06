@@ -35,13 +35,14 @@ function Home() {
               <ListTile title={"Criar Teste"} open={true} />
             </Link>
           </div>
-          <div>
-            <ListTile title={"Resultados"} open={true} />
+          <div><Link to="/resultados">
+            <ListTile title={"Resultados"} open={true} /></Link>
           </div>
         </section>
         <section>
           <div>
             {Testes.map((teste, index) => (
+              <Link to="/responder">
               <ListTile
                 key={index}
                 title={teste.nomeTeste}
@@ -49,7 +50,7 @@ function Home() {
                 open={false}
                 trailing={true}
                 leading={true}
-              />
+              /></Link>
             ))}
           </div>
         </section>

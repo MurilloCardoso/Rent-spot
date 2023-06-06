@@ -2,10 +2,11 @@ import "./criacaoTeste.css";
 import ButtonPrimary from "../../components/button/Button";
 import InputTeste from "../../components/inputs/InputPerguntas/input";
 import React, { useState, useRef } from "react";
-
+import Dropdown  from "../../components/Dropdown/Dropdown";
+import Api from "../../utils/Api";
 function CriacaoTeste() {
   const [perguntas, setPerguntas] = useState([]);
-  const [contador, setContador] = useState(1);
+  const [contador, setContador] = useState(0);
   const [inputValues, setInputValues] = useState({
     Teste: "",
     A: "",
@@ -21,12 +22,27 @@ function CriacaoTeste() {
       [name]: value,
     }));
   };
+  const [dropdowns, setDropdowns] = useState([]);
 
+  const handleAddDropdown = () => {
+    setDropdowns([...dropdowns, ""]);
+  };
+
+  const handleOptionSelected = (index, value) => {
+    const updatedDropdowns = [...dropdowns];
+    updatedDropdowns[index] = value;
+    setDropdowns(updatedDropdowns);
+  };
   function adicionarPergunta() {
     setPerguntas((prevPerguntas) => [
       ...prevPerguntas,
       <section key={contador} className="form-perguntas">
         <label>Pergunta</label>
+        <InputTeste
+            className="Teste"
+            id="input"
+            onValueChange={(newValue) => handleInputChange("Teste", newValue)}
+          />
         <div id="itens-perguntas-group">
           <label>A</label>
           <InputTeste
@@ -67,57 +83,74 @@ function CriacaoTeste() {
             onValueChange={(newValue) => handleInputChange("E", newValue)}
           />
         </div>
+    
+        <Dropdown key={contador} index={contador} onOptionSelected={handleOptionSelected} />
+  
       </section>,
     ]);
     setContador((prevContador) => prevContador + 1);
   }
   function handleFinalizar() {
+    console.log(dropdowns);
     const perguntasArray = [];
+  
     const inputs = document.querySelectorAll(".form-perguntas input");
-
+  
     inputs.forEach((input, index) => {
       const perguntaIndex = Math.floor(index / 6);
       const inputIndex = index % 6;
       const inputValue = input.value;
-
+  
       if (!perguntasArray[perguntaIndex]) {
         perguntasArray[perguntaIndex] = {};
       }
-
+  
       switch (inputIndex) {
         case 0:
           perguntasArray[perguntaIndex].pergunta = inputValue;
           break;
         case 1:
-          perguntasArray[perguntaIndex].respostaA = inputValue;
+          perguntasArray[perguntaIndex].opcaoA = inputValue;
           break;
         case 2:
-          perguntasArray[perguntaIndex].respostaB = inputValue;
+          perguntasArray[perguntaIndex].opcaoB = inputValue;
           break;
         case 3:
-          perguntasArray[perguntaIndex].respostaC = inputValue;
+          perguntasArray[perguntaIndex].opcaoC = inputValue;
           break;
         case 4:
-          perguntasArray[perguntaIndex].respostaD = inputValue;
+          perguntasArray[perguntaIndex].opcaoD = inputValue;
           break;
         case 5:
-          perguntasArray[perguntaIndex].respostaE = inputValue;
+          perguntasArray[perguntaIndex].opcaoE = inputValue;
           break;
         default:
           break;
       }
     });
-
-    console.log(perguntasArray);
-
-    // Faça algo com o array perguntasArray
-    // Exemplo: Enviar as perguntas para o servidor, exibir em um modal, etc.
+  
+    const testeNome = inputValues.Teste;
+  
+    const finalData = perguntasArray.map((pergunta, index) => {
+      return {
+        ...pergunta,
+        respostaCerta: dropdowns[index],
+      };
+    });
+  
+    const jsonData = {
+      nomeTeste: testeNome,
+      perguntas: finalData,
+    };
+  console.log(jsonData)
+   Api.InsertNovoTesteApi(jsonData);
   }
+  
 
   return (
     <div>
       <div id="itens-perguntas-group">
-        <label>Nome Teste: {inputValues.Teste}</label>
+        <label>Nome Teste:</label>
         <InputTeste
           className="Teste"
           onValueChange={(newValue) => handleInputChange("Teste", newValue)}

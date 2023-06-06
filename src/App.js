@@ -6,13 +6,13 @@ import {
   Link,
   useLocation,
 } from "react-router-dom";
+
 import HeaderComponents from "./module/components/Header/Header";
 import Sessao from "./module/pages/sessao/Sessao";
 import Home from "./module/pages/home/Home";
-import Login from "./module/pages/login/Login";
-import Cadastro from "./module/pages/cadastro/Cadastro";
+import Resultados from "./module/pages/resultados/Resultados";
 import CriacaoTeste from "./module/pages/criacao/CriacaoTeste";
-
+import Responder from "./module/pages/responder/Responder";
 function Header() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/sessao";
@@ -23,6 +23,7 @@ function Header() {
 
   return <HeaderComponents />;
 }
+
 
 function ProtectedRoute({ element: Component, ...rest }) {
   const token = localStorage.getItem("token");
@@ -42,9 +43,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sessao" element={<Sessao />} />
-
+          <Route path="/resultados" element={<Resultados />}></Route>
           <Route path="/criarTeste" element={<CriacaoTeste />}></Route>
-          {/* <Route
+          <Route path="/Responder" element={< Responder/>}></Route>
+                    {/* <Route
             path="/criarTeste"
             element={<ProtectedRoute element={<CriacaoTeste />} />}
           /> */}
