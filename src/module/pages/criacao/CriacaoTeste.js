@@ -140,6 +140,7 @@ function CriacaoTeste() {
   
     const jsonData = {
       nomeTeste: testeNome,
+      autor: "Murillo",
       perguntas: finalData,
     };
   console.log(jsonData)

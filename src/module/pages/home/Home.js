@@ -1,31 +1,24 @@
 import "./homeStyle.css";
 import ListTile from "../../components/ListTIle/ListTile";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import Api from "../../utils/Api"
 import { Link } from "react-router-dom";
 function Home() {
   const [Testes, setTestes] = useState([
-    {
-      autor: "Murillo",
-      quantidadePerguntas: 5,
-      nomeTeste: "Historia",
-    },
-    {
-      autor: "Marcio",
-      quantidadePerguntas: 10,
-      nomeTeste: "Matematica",
-    },
-    {
-      autor: "Mateus",
-      quantidadePerguntas: 50,
-      nomeTeste: "Ciência",
-    },
-    {
-      autor: "Mateus",
-      quantidadePerguntas: 50,
-      nomeTeste: "Ciência",
-    },
-  ]);
 
+  ]);
+  useEffect(() => {
+    const fetchTestes = async () => {
+      try {
+        const resultados = await Api.LerTesteCriados();
+        setTestes(resultados);
+      } catch (error) {
+        console.error("Erro ao obter os resultados:", error);
+      }
+    };
+
+    fetchTestes();
+  }, []);
   return (
     <div>
       <main className="main-home">
@@ -42,7 +35,7 @@ function Home() {
         <section>
           <div>
             {Testes.map((teste, index) => (
-              <Link to="/responder">
+              <Link to={`/responder/${index}`} key={index}>
               <ListTile
                 key={index}
                 title={teste.nomeTeste}

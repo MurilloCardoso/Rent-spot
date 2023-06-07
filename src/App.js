@@ -45,7 +45,7 @@ function App() {
           <Route path="/sessao" element={<Sessao />} />
           <Route path="/resultados" element={<Resultados />}></Route>
           <Route path="/criarTeste" element={<CriacaoTeste />}></Route>
-          <Route path="/Responder" element={< Responder/>}></Route>
+          <Route path="/Responder/:id" element={< Responder/>}></Route>
                     {/* <Route
             path="/criarTeste"
             element={<ProtectedRoute element={<CriacaoTeste />} />}

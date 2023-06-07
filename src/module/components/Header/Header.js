@@ -8,8 +8,9 @@ function Header() {
   return (
     <header className="header">
       <nav className="nav">
+      <Link to="/">
         <img src={img} className="logo"></img>
-
+        </Link>
         <div className="buttons-container">
           <BiHelpCircle id="icon" />
           <Link to="/sessao">

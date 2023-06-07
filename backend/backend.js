@@ -4,6 +4,13 @@ const app = express();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { number } = require("yargs");
+
+//===== IMPORT SCHEMA PARA NAO CHAMAR DUAS VEZES
+
+const Testes = require('./schemas/Testes_schema'); // Importe o modelo Teste aqui
+const Resultados=require("./schemas/Resultados_schema")// Importe o modelo Resultado aqui
+
 
 app.use(
   cors({
@@ -12,23 +19,9 @@ app.use(
 );
 app.use(express.json());
 
-// Função para verificar a autenticidade das credenciais do usuário
-function authenticateUser(email, password) {
-  const user = users.find((user) => user.email === email);
-  if (!user) {
-    throw new Error("Usuário não encontrado");
-  }
-
-  if (!bcrypt.compareSync(password, user.password)) {
-    throw new Error("Senha incorreta");
-  }
-
-  return user;
-}
-
 // Rota de login
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { name, password } = req.body;
 
   try {
     // Verificar as credenciais do usuário
@@ -65,55 +58,73 @@ function authenticateToken(req, res, next) {
 app.get("/protected", authenticateToken, (req, res) => {
   res.json({ message: "Acesso permitido" });
 });
-app.post("/inserirDados", async (req, res) => {
+
+app.post("/login", async (req, res) => {
+  
   try {
     await mongoose.connect(
-      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/",
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }
     );
-    console.log("Conectado ao servidor MongoDB");
-
-    // Definir um esquema para a coleção
-    var schema = new mongoose.Schema({
-      nome: String,
-      idade: Number,
-    });
+     console.log('Conectado ao servidor MongoDB');
 
     const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
 
-    const user = new User(data); // Crie uma instância do modelo User com os dados recebidos
+    const userSchema = new mongoose.Schema({
+      name: String,
+      email: String,
+      password: String,
+    });
+    // Definir o modelo para a coleção "user"
+    const User = mongoose.model("resultados", userSchema, "resultados");
 
-    await user.save(); // Salve o modelo no banco de dados
+    // Realizar a leitura de todos os documentos na coleção "user"
+    const users = await User.find().exec();
 
-    // Fechar a conexão com o servidor MongoDB
+    const user = users.find((user) => user.email === email);
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+  
+    if (!bcrypt.compareSync(password, user.password)) {
+      throw new Error("Senha incorreta");
+    }
+  
+  
+ 
+    // Feche a conexão com o servidor MongoDB
     mongoose.connection.close();
 
     res.status(200).json({
-      message: "Conexão estabelecida e operações realizadas com sucesso.",
-    });
+      message: "Conexão estabelecida e operações realizadas com sucesso.", 
+    }); 
+    return user;
   } catch (error) {
     console.error("Erro ao conectar ao servidor MongoDB:", error);
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
+
 app.post("/inserirTeste",async(req,res)=>{
   try {
     await mongoose.connect(
-      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/",
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }
     );
-    console.log("Conectado ao servidor MongoDB");
-
+    console.log('Conectado ao servidor MongoDB');
 
     const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
-console.log(data);
-    // Fechar a conexão com o servidor MongoDB
+
+    // Salve os dados diretamente no banco de dados
+    await mongoose.connection.db.collection('testes').insertOne(data);
+
+    // Feche a conexão com o servidor MongoDB
     mongoose.connection.close();
 
     res.status(200).json({
@@ -124,12 +135,68 @@ console.log(data);
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
-app.get("/lerDados", async (req, res) => {
-  console.log("awd");
+app.post("/inserirUsuario",async(req,res)=>{
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    console.log('Conectado ao servidor MongoDB');
+
+    const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
+
+    // Salve os dados diretamente no banco de dados
+    await mongoose.connection.db.collection('users').insertOne(data);
+
+    // Feche a conexão com o servidor MongoDB
+    mongoose.connection.close();
+
+    res.status(200).json({
+      message: "Conexão estabelecida e operações realizadas com sucesso.",
+    });
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+});
+
+app.post("/inserirResposta",async(req,res)=>{
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    console.log('Conectado ao servidor MongoDB');
+
+    const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
+
+    // Salve os dados diretamente no banco de dados
+    await mongoose.connection.db.collection('resultados').insertOne(data);
+
+    // Feche a conexão com o servidor MongoDB
+    mongoose.connection.close();
+
+    res.status(200).json({
+      message: "Conexão estabelecida e operações realizadas com sucesso.",
+    });
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+});
+
+
+app.get("/lerResultados", async (req, res) => {
 
   try {
     await mongoose.connect(
-      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/sample_mflix",
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -137,16 +204,9 @@ app.get("/lerDados", async (req, res) => {
     );
     console.log("conectado banco");
     // Definir o esquema do documento
-    const userSchema = new mongoose.Schema({
-      name: String,
-      email: String,
-      password: String,
-    });
-    // Definir o modelo para a coleção "user"
-    const User = mongoose.model("users", userSchema, "users");
-
+  
     // Realizar a leitura de todos os documentos na coleção "user"
-    const users = await User.find().exec();
+    const users = await Resultados.find().exec();
 
     console.log("Documentos encontrados:", users);
     res.status(200).json(users); // Retornar os documentos como resposta
@@ -158,6 +218,33 @@ app.get("/lerDados", async (req, res) => {
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
+app.get("/lerTestesCriados", async (req, res) => {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    console.log("Conectado ao banco de dados");
+  
+    // Realizar a leitura de todos os documentos na coleção "resultados"
+    const users = await Testes.find().exec();
+
+    console.log("Documentos encontrados:", users);
+    res.status(200).json(users); // Retornar os documentos como resposta
+
+    // Fechar a conexão com o banco de dados após a leitura
+    mongoose.connection.close();
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+});
+
+
+
 app.listen(2000, () => {
   console.log("Servidor ouvindo na porta 2000");
 });

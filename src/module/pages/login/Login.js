@@ -1,16 +1,29 @@
 import "./login.css";
+import {useState} from "react";
+function Login({ onValueUsernameChange, onValuePasswordChange }) {
 
-function Login() {
+
+  const handleUsernameChange = (event) => {
+ 
+     onValueUsernameChange(event.target.value)
+  };
+
+  const handlePasswordChange = (event) => {
+
+    onValuePasswordChange(event.target.value);
+  };
   return (
     <div>
       <form class="form">
         <div class="input-group">
           <label for="username">Username</label>
-          <input type="text" name="username" id="username" placeholder="" />
+          <input type="text" name="username" id="username" placeholder=""  
+            onChange={handleUsernameChange}/>
         </div>
         <div class="input-group">
           <label for="password">Password</label>
-          <input type="password" name="password" id="password" placeholder="" />
+          <input type="password" 
+            onChange={handlePasswordChange} name="password" id="password" placeholder="" />
           <div class="forgot">
             <a rel="noopener noreferrer" href="#">
               Forgot Password ?
