@@ -4,12 +4,14 @@ const app = express();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+var localStorage = require('web-storage')().localStorage;
 const { number } = require("yargs");
 
 //===== IMPORT SCHEMA PARA NAO CHAMAR DUAS VEZES
 
 const Testes = require('./schemas/Testes_schema'); // Importe o modelo Teste aqui
 const Resultados=require("./schemas/Resultados_schema")// Importe o modelo Resultado aqui
+const Users=require("./schemas/User_schema")// Importe o modelo Resultado aqui
 
 
 app.use(
@@ -19,22 +21,7 @@ app.use(
 );
 app.use(express.json());
 
-// Rota de login
-app.post("/login", (req, res) => {
-  const { name, password } = req.body;
 
-  try {
-    // Verificar as credenciais do usuário
-    const user = authenticateUser(email, password);
-
-    // Gerar um token de autenticação
-    const token = jwt.sign({ userId: user.id }, "seuSegredoDoToken");
-
-    res.json({ token });
-  } catch (error) {
-    res.status(401).json({ error: error.message });
-  }
-});
 
 // Middleware de autenticação
 function authenticateToken(req, res, next) {
@@ -60,53 +47,41 @@ app.get("/protected", authenticateToken, (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  
   try {
-    await mongoose.connect(
-      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-     console.log('Conectado ao servidor MongoDB');
-
-    const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
-
-    const userSchema = new mongoose.Schema({
-      name: String,
-      email: String,
-      password: String,
+    await mongoose.connect("mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
-    // Definir o modelo para a coleção "user"
-    const User = mongoose.model("resultados", userSchema, "resultados");
+    console.log("Conectado ao servidor MongoDB");
 
-    // Realizar a leitura de todos os documentos na coleção "user"
-    const users = await User.find().exec();
+    const {name, password } = req.body;
 
-    const user = users.find((user) => user.email === email);
+    let user = await Users.findOne({ name });
+
     if (!user) {
       throw new Error("Usuário não encontrado");
     }
-  
-    if (!bcrypt.compareSync(password, user.password)) {
+    var  isPasswordValid=false;
+   if(password.toString() == user.password.toString()){
+    isPasswordValid=true;
+   }
+
+    if (!isPasswordValid) {
       throw new Error("Senha incorreta");
     }
-  
-  
- 
-    // Feche a conexão com o servidor MongoDB
+    const token = jwt.sign({ userId: user._id }, "seuSegredoDoToken");
+
+
+
     mongoose.connection.close();
 
-    res.status(200).json({
-      message: "Conexão estabelecida e operações realizadas com sucesso.", 
-    }); 
-    return user;
+    res.status(200).json({ message: "Login realizado com sucesso", token, nome: user.name });
   } catch (error) {
     console.error("Erro ao conectar ao servidor MongoDB:", error);
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
+
 
 app.post("/inserirTeste",async(req,res)=>{
   try {
@@ -135,7 +110,8 @@ app.post("/inserirTeste",async(req,res)=>{
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
-app.post("/inserirUsuario",async(req,res)=>{
+
+app.post("/inserirUsuario", async (req, res) => {
   try {
     await mongoose.connect(
       "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
@@ -144,24 +120,36 @@ app.post("/inserirUsuario",async(req,res)=>{
         useUnifiedTopology: true,
       }
     );
-    console.log('Conectado ao servidor MongoDB');
+    console.log("Conectado ao servidor MongoDB");
 
-    const data = req.body; // Supondo que os dados a serem salvos estão no corpo da requisição
+    const { name, password } = req.body;
 
-    // Salve os dados diretamente no banco de dados
-    await mongoose.connection.db.collection('users').insertOne(data);
+    const user = await Users.findOne({ name });
+
+    if (user) {
+      throw new Error("Usuário já existe");
+    }
+
+    // Crie um novo objeto User com os dados recebidos
+    const newUser = new Users({ name, password });
+
+    // Salve o novo usuário no banco de dados
+    await newUser.save();
+
+    const token = jwt.sign({ userId: newUser._id }, "seuSegredoDoToken");
 
     // Feche a conexão com o servidor MongoDB
     mongoose.connection.close();
 
-    res.status(200).json({
-      message: "Conexão estabelecida e operações realizadas com sucesso.",
-    });
+    res
+      .status(200)
+      .json({ message: "Usuário cadastrado com sucesso", token, nome: name });
   } catch (error) {
     console.error("Erro ao conectar ao servidor MongoDB:", error);
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
+
 
 app.post("/inserirResposta",async(req,res)=>{
   try {
@@ -242,8 +230,101 @@ app.get("/lerTestesCriados", async (req, res) => {
     res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
   }
 });
+app.get("/lerTeste/:id", async (req, res) => {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    console.log("Conectado ao banco de dados");
+   const id = req.params.id;
+    // Realizar a leitura de todos os documentos na coleção "resultados"
+    const teste = await Testes.findById(id);
+    if (teste) {
+      console.log("Documento encontrado:", teste);
+      res.status(200).json(teste);
+    } else {
+      console.log("Nenhum documento encontrado com o ID fornecido.");
+      res
+        .status(404)
+        .json({ error: "Nenhum documento encontrado com o ID fornecido." });
+    }
+    // Fechar a conexão com o banco de dados após a leitura
+    mongoose.connection.close();
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+});
+app.delete("/deletarTeste/:id",async (req,res)=>{
 
+  
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    console.log("Conectado ao banco de dados");
+   const id = req.params.id;
+    // Realizar a leitura de todos os documentos na coleção "resultados"
+    const result = await Testes.deleteOne({ _id: id });
+   if (result.deletedCount === 1) {
+    console.log("Documento excluído com sucesso.");
+    res.status(200).json({ message: "Documento excluído com sucesso." });
+  } else {
+    console.log("Nenhum documento encontrado com o ID fornecido.");
+    res
+      .status(404)
+      .json({ error: "Nenhum documento encontrado com o ID fornecido." });
+  }
+    // Fechar a conexão com o banco de dados após a leitura
+    mongoose.connection.close();
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+})
+app.put("/updateTeste/:id",async(req,res)=>{
+  try {
+    await mongoose.connect(
+      "mongodb+srv://murilloaqw:quW5gfJolEvMLDx4@rentspot.hmyt9cq.mongodb.net/test",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    ); console.log("Conectado ao banco de dados");
+    const id = req.params.id;
+    const atualizacao = req.body; // Dados de atualização enviados no corpo da requisição
+console.log(atualizacao)
+    // Realizar a conexão com o banco de dados usando o Mongoose
 
+    const teste = await Testes.findByIdAndUpdate(id, atualizacao, {
+      new: true, // Retorna o documento atualizado em vez do documento original
+    });
+
+    if (teste) {
+      console.log("Documento atualizado:", teste);
+      res.status(200).json(teste);
+    } else {
+      console.log("Nenhum documento encontrado com o ID fornecido.");
+      res
+        .status(404)
+        .json({ error: "Nenhum documento encontrado com o ID fornecido." });
+    }
+
+    // Fechar a conexão com o banco de dados após a atualização
+
+  } catch (error) {
+    console.error("Erro ao conectar ao servidor MongoDB:", error);
+    res.status(500).json({ error: "Erro ao conectar ao servidor MongoDB" });
+  }
+});
 
 app.listen(2000, () => {
   console.log("Servidor ouvindo na porta 2000");

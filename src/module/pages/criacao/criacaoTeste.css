@@ -5,9 +5,9 @@
 }
 #itens-perguntas-group {
   display: flex;
-
-  align-items: center;
-  margin-bottom: 10px;
+justify-items: center;
+  text-align: center;
+ 
 }
 #itens-perguntas-group label {
   margin-right: 10px;

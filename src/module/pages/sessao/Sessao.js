@@ -1,9 +1,11 @@
 import React, { useState,useEffect } from "react";
 import "./sessao.css";
+import { useNavigate} from "react-router-dom";
 import LoginSessao from "../login/Login";
 import CadastroSessao from "../cadastro/Cadastro";
 import Api from  "../../utils/Api";
 function Sessao() {
+  const navigate = useNavigate();
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [inputValueUsername, setInputUsernameValue] = useState("");
   const [inputValuePassword, setInputPasswordValue] = useState("");
@@ -42,11 +44,21 @@ function Sessao() {
     if(isLoginForm){   
      
       const jsonData= {"name":inputValueUsername,"password":inputValuePassword}
-      Api.LoginUserApi(jsonData);
+      Api.LoginUserApi(jsonData) .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Erro no login:", error);
+      });
     }else{
       if(inputValueConfirmPassword === inputValuePassword){console.log("Cadastro")
         const jsonData= {"name":inputValueUsername,"email":inputValueEmail,"password":inputValueConfirmPassword}
-       Api.InsertUserApi(jsonData);
+       Api.InsertUserApi(jsonData).then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Erro no login:", error);
+      });;
       }
      
     }

@@ -1,10 +1,25 @@
 import "./criacaoTeste.css";
 import ButtonPrimary from "../../components/button/Button";
 import InputTeste from "../../components/inputs/InputPerguntas/input";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Dropdown  from "../../components/Dropdown/Dropdown";
 import Api from "../../utils/Api";
+import {useNavigate} from "react-router-dom"
 function CriacaoTeste() {
+
+  const navigate = useNavigate();
+  useEffect(() => {
+ 
+ 
+    const token = localStorage.getItem("token");
+  
+    if (token === null) {
+      navigate("/sessao");
+      return null;
+    }
+  
+  });
+ 
   const [perguntas, setPerguntas] = useState([]);
   const [contador, setContador] = useState(0);
   const [inputValues, setInputValues] = useState({
@@ -90,46 +105,42 @@ function CriacaoTeste() {
     ]);
     setContador((prevContador) => prevContador + 1);
   }
-  function handleFinalizar() {
-    console.log(dropdowns);
-    const perguntasArray = [];
+  function handleFinalizar() {  const testeNome = inputValues.Teste;
+    if(testeNome===""){
+        window.alert("o Campo do Nome teste se encontra vazio")
+        return;
+    }
   
+    const perguntasArray = [];
+
     const inputs = document.querySelectorAll(".form-perguntas input");
   
-    inputs.forEach((input, index) => {
-      const perguntaIndex = Math.floor(index / 6);
-      const inputIndex = index % 6;
-      const inputValue = input.value;
-  
-      if (!perguntasArray[perguntaIndex]) {
-        perguntasArray[perguntaIndex] = {};
+    for (let i = 0; i < inputs.length; i += 6) {
+      if (
+        inputs[i].value === "" ||
+        inputs[i + 1].value === "" ||
+        inputs[i + 2].value === "" ||
+        inputs[i + 3].value === "" ||
+        inputs[i + 4].value === "" ||
+        inputs[i + 5].value === ""
+      ) {
+        window.alert("Preencha todos os campos antes de prosseguir.");
+        return;
       }
+    
+      const pergunta = {
+        pergunta: inputs[i].value,
+        opcaoA: inputs[i + 1].value,
+        opcaoB: inputs[i + 2].value,
+        opcaoC: inputs[i + 3].value,
+        opcaoD: inputs[i + 4].value,
+        opcaoE: inputs[i + 5].value,
+      };
+    
+      perguntasArray.push(pergunta);
+    }
   
-      switch (inputIndex) {
-        case 0:
-          perguntasArray[perguntaIndex].pergunta = inputValue;
-          break;
-        case 1:
-          perguntasArray[perguntaIndex].opcaoA = inputValue;
-          break;
-        case 2:
-          perguntasArray[perguntaIndex].opcaoB = inputValue;
-          break;
-        case 3:
-          perguntasArray[perguntaIndex].opcaoC = inputValue;
-          break;
-        case 4:
-          perguntasArray[perguntaIndex].opcaoD = inputValue;
-          break;
-        case 5:
-          perguntasArray[perguntaIndex].opcaoE = inputValue;
-          break;
-        default:
-          break;
-      }
-    });
   
-    const testeNome = inputValues.Teste;
   
     const finalData = perguntasArray.map((pergunta, index) => {
       return {
@@ -144,13 +155,18 @@ function CriacaoTeste() {
       perguntas: finalData,
     };
   console.log(jsonData)
-   Api.InsertNovoTesteApi(jsonData);
+  // Api.InsertNovoTesteApi(jsonData) .then(() => {
+  //  navigate("/")
+  //})
+  //.catch((error) => {
+  //  console.error("Erro ao inserir os dados:", error);
+  //});
   }
   
 
   return (
-    <div>
-      <div id="itens-perguntas-group">
+    <div style={{ textAlign: "center" }}>
+      <div id="form-perguntas">
         <label>Nome Teste:</label>
         <InputTeste
           className="Teste"

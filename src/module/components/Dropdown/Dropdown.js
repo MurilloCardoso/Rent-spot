@@ -1,17 +1,18 @@
-import {useState} from "react"
+import React, { useState } from "react";
 
-const Dropdown = ({ index, onOptionSelected }) => {
-  const [selectedOption, setSelectedOption] = useState("");
+const Dropdown = ({ index, onOptionSelected, value }) => {
+  const [selectedOption, setSelectedOption] = useState(value || "");
 
   const handleOptionChange = (event) => {
-    const value = event.target.value;
-    setSelectedOption(value);
-    onOptionSelected(index, value);
+
+    const selectedValue = event.target.value;
+    setSelectedOption(selectedValue);
+    onOptionSelected(index, selectedValue);
   };
 
   return (
-    <select name="Opcoes" id={`opcoes-${index}`} onChange={handleOptionChange}>
-      <option value="">Selecione uma opção</option>
+    <select name="Opcoes" value={selectedOption} id={`opcoes-${index}`} onChange={handleOptionChange}>
+
       <option value="A">A</option>
       <option value="B">B</option>
       <option value="C">C</option>
@@ -20,4 +21,5 @@ const Dropdown = ({ index, onOptionSelected }) => {
     </select>
   );
 };
+
 export default Dropdown;

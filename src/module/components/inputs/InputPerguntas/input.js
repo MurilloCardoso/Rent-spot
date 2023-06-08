@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import "./inputTeste.css";
 
-const InputTeste = ({ className, onValueChange }) => {
-  const [value, setValue] = useState("");
+const InputTeste = ({ className, onValueChange, value }) => {
+  const [inputValue, setInputValue] = useState(value || "");
 
   const handleChange = (event) => {
     const newValue = event.target.value;
-    setValue(newValue);
+    setInputValue(newValue);
     onValueChange(newValue);
   };
 
@@ -14,7 +14,7 @@ const InputTeste = ({ className, onValueChange }) => {
     <input
       type="text"
       className={className}
-      value={value}
+      value={inputValue}
       onChange={handleChange}
     />
   );
