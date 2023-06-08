@@ -6,6 +6,7 @@ import Dropdown from "../../components/Dropdown/Dropdown";
 import Api from "../../utils/Api";
 import { useParams, useNavigate } from "react-router-dom";
 import Loading from "../../components/loading/Loading";
+import DropdownSet from "../../components/Dropdown/DropdownSet";
 
 function EditarTeste() {
   const { id } = useParams();
@@ -25,7 +26,9 @@ const [isLoading,setisLoading] =useState(false);
 
   useEffect(() => {
     const fetchTestes = async () => {
-      try {
+      try { if(localStorage.getItem("token") == null &&  localStorage.getItem("username")==null) {
+        navigate("/sessao")
+    }
         const resultado = await Api.LerTesteID(id);
         setTestes(resultado);
         setisLoading(true);
@@ -108,7 +111,7 @@ const [isLoading,setisLoading] =useState(false);
 
      Api.UpdateTesteApi(id,jsonData)
      .then(() => {
-       navigate("/");
+      window.alert("Editada com sucesso")
      })
      .catch((error) => {
        console.error("Erro ao inserir os dados:", error);
@@ -197,7 +200,7 @@ const [isLoading,setisLoading] =useState(false);
                     value={pergunta.opcaoE}
                   />
                 </div>
-                <Dropdown
+                <DropdownSet
                   key={perguntaIndex}
                   index={perguntaIndex}
                   onOptionSelected={handleOptionSelected}

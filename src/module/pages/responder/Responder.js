@@ -8,11 +8,9 @@ function Responder() {
   let navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token === null) {
-      navigate("/sessao");
-      return null;
-    }
+    if(localStorage.getItem("token") == null &&  localStorage.getItem("username")==null) {
+      navigate("/sessao")
+  }
   
   });
   const { id } = useParams();
@@ -75,7 +73,7 @@ function Responder() {
     };
     Api.InsertRespostaApi(jsonData)
       .then(() => {
-        navigate("/");
+        window.alert("Respondidade com sucesso")
       })
       .catch((error) => {
         console.error("Erro ao inserir os dados:", error);

@@ -8,32 +8,41 @@ import { Link, useNavigate } from "react-router-dom";
 function Home() {
   const navigate = useNavigate();
   const [testes, setTestes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Definido como true inicialmente
+
+ 
 
   useEffect(() => {
     const fetchTestes = async () => {
-      try {
+      try { 
+      if(localStorage.getItem("token") == null &&  localStorage.getItem("username")==null) {
+          navigate("/sessao")
+      }
         const resultados = await Api.LerTesteCriados();
         setTestes(resultados);
       } catch (error) {
         console.error("Erro ao obter os resultados:", error);
+      } finally {
+        setLoading(false); // Atualiza o estado para false quando os dados são carregados
       }
     };
 
     fetchTestes();
   }, []);
 
-  const excluir = (id, index) => {
+  const excluir = (id, index) => {  const confirmed = window.confirm("Deseja excluir este item?");
+  if (confirmed) {
     Api.DeleteTesteApi(id);
     const updatedTestes = [...testes];
     updatedTestes.splice(index, 1);
     setTestes(updatedTestes);
+  }
+ 
   };
 
   const editar = (id) => {
     navigate("/editar/" + id);
   };
-
 
   return (
     <div>
@@ -51,31 +60,30 @@ function Home() {
         ) : (
           <>
             <section>
-  <h1>Testes Criados</h1>
+              <h1>Testes Criados</h1>
 
-  {testes.length > 0 ? (
-    <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
-      {testes.map((teste, index) => (
-        <ListTile
-          key={teste._id}
-          title={teste.nomeTeste}
-          subtitle={teste.autor}
-          trailing={true}
-          eventEdit={() => editar(teste._id)}
-          url={"/responder/" + teste._id}
-          leading={true}
-          openResponder={true}
-          event={() => excluir(teste._id, index)}
-        />
-      ))}
-    </div>
-  ) : (
-    <div>
-      <h3>Lista de Testes vazia</h3>
-    </div>
-  )}
-</section>
-
+              {testes.length > 0 ? (
+                <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
+                  {testes.map((teste, index) => (
+                    <ListTile
+                      key={teste._id}
+                      title={teste.nomeTeste}
+                      subtitle={teste.autor}
+                      trailing={true}
+                      eventEdit={() => editar(teste._id)}
+                      url={"/responder/" + teste._id}
+                      leading={true}
+                      openResponder={true}
+                      event={() => excluir(teste._id, index)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <h3>Lista de Testes vazia</h3>
+                </div>
+              )}
+            </section>
           </>
         )}
       </main>

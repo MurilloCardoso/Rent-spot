@@ -3,8 +3,11 @@ import { Link } from "react-router-dom";
 import { BiHelpCircle } from "react-icons/bi";
 import ButtonPrimary from "../button/Button";
 import img from "../../data/img/logo512.png";
+import { useNavigate } from "react-router-dom";
 import "./HeaderStyle.css";
+
 function Header() {
+  let navigate = useNavigate();
   const [user, setUser] = useState();
   const [isLogged, setIsLogged] = useState(false);
 
@@ -20,15 +23,23 @@ function Header() {
     }
   }, []);
 
+  const sair = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    navigate("/sessao");
+  };
+
   return (
     <header className="header">
       <nav className="nav">
         <Link to="/">
-          
           <img src={img} className="logo" alt="Logo" />
         </Link>
         {isLogged ? (
-          <div className="buttons-container"> <h3>Olá, {user}</h3></div>
+          <div className="buttons-container">
+            <h3>Olá, {user}</h3>
+            <button onClick={sair}>Sair</button>
+          </div>
         ) : (
           <div className="buttons-container">
             <BiHelpCircle id="icon" />

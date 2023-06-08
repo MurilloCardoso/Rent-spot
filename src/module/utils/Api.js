@@ -20,7 +20,7 @@ class Api {
         // Redirecionar para a página protegida ou fazer outras ações necessárias
         console.log(data);
       } else {
-        window.alert("Erro ao inserir os dados");
+
         throw new Error('Erro ao inserir os dados');
       }
     } catch (error) {
@@ -43,7 +43,7 @@ class Api {
         
             return data; // Retorne os dados obtidos para onde desejar
           } catch (error) {
-            window.alert("Erro ao obter os dados");
+         
             console.error('Erro ao obter os dados:', error);
             throw error; // Lança o erro para que possa ser tratado em outro lugar, se necessário
           }
@@ -63,7 +63,7 @@ class Api {
          
             return data; // Retorne os dados obtidos para onde desejar
           } catch (error) {
-            window.alert("Erro ao obter os dados");
+         
             console.error('Erro ao obter os dados:', error);
             throw error; // Lança o erro para que possa ser tratado em outro lugar, se necessário
           }
@@ -117,7 +117,7 @@ class Api {
               console.log(data); // Mensagem de sucesso do servidor
               // Faça o que for necessário após a inserção dos dados
             })
-            .catch(error => {  window.alert("Erro ao inserir os dados");
+            .catch(error => { 
               console.error('Erro ao inserir os dados:', error);
               // Lide com o erro adequadamente
             });
@@ -142,7 +142,7 @@ class Api {
                 console.log(data); // Mensagem de sucesso do servidor
                 // Faça o que for necessário após a inserção dos dados
               })
-              .catch(error => { window.alert("Erro ao inserir os dados");
+              .catch(error => { 
                 console.error('Erro ao inserir os dados:', error);
                 // Lide com o erro adequadamente
               });
@@ -170,7 +170,7 @@ class Api {
                   console.log(data); // Mensagem de sucesso do servidor
                   // Faça o que for necessário após a inserção dos dados
                 })
-                .catch(error => {window.alert("Erro ao inserir os dados");
+                .catch(error => {
                   console.error('Erro ao inserir os dados:', error);
                   // Lide com o erro adequadamente
                 });
@@ -193,7 +193,7 @@ class Api {
                     throw new Error('Failed to update data');
                   }
                 } catch (error) {
-                  window.alert('Failed to update data');
+             
                   console.error('Error while updating data:', error);
                   // Handle the error appropriately
                 }
@@ -213,7 +213,7 @@ class Api {
                   } else {
                     throw new Error('Erro ao excluir o documento');
                   }
-                } catch (error) {window.alert("Erro ao excluir o documento");
+                } catch (error) {
                   console.error('Erro ao excluir o documento:', error);
                   // Lide com o erro adequadamente
                 }

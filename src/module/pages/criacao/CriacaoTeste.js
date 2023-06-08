@@ -11,12 +11,9 @@ function CriacaoTeste() {
   useEffect(() => {
  
  
-    const token = localStorage.getItem("token");
-  
-    if (token === null) {
-      navigate("/sessao");
-      return null;
-    }
+    if(localStorage.getItem("token") == null &&  localStorage.getItem("username")==null) {
+      navigate("/sessao")
+  }
   
   });
  
@@ -141,7 +138,10 @@ function CriacaoTeste() {
     }
   
   
-  
+  if(dropdowns.length!=contador){
+    window.alert("Preencha todos os Dropdown antes de prosseguir.");
+    return;
+  }
     const finalData = perguntasArray.map((pergunta, index) => {
       return {
         ...pergunta,
@@ -151,16 +151,16 @@ function CriacaoTeste() {
   
     const jsonData = {
       nomeTeste: testeNome,
-      autor: "Murillo",
+      autor: localStorage.getItem("username"),
       perguntas: finalData,
     };
   console.log(jsonData)
-  // Api.InsertNovoTesteApi(jsonData) .then(() => {
-  //  navigate("/")
-  //})
-  //.catch((error) => {
-  //  console.error("Erro ao inserir os dados:", error);
-  //});
+   Api.InsertNovoTesteApi(jsonData) .then(() => {
+    window.alert("Criadao com sucesso")
+  })
+  .catch((error) => {
+    console.error("Erro ao inserir os dados:", error);
+  });
   }
   
 
