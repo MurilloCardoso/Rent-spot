@@ -1,4 +1,4 @@
-import {useState} from "react"
+import { useState } from "react";
 
 const Dropdown = ({ index, onOptionSelected }) => {
   const [selectedOption, setSelectedOption] = useState("");
@@ -11,7 +11,7 @@ const Dropdown = ({ index, onOptionSelected }) => {
 
   return (
     <select name="Opcoes" id={`opcoes-${index}`} onChange={handleOptionChange}>
-      <option value="">Selecione uma opção</option>
+      <option value=" ">Selecione uma opção</option>
       <option value="A">A</option>
       <option value="B">B</option>
       <option value="C">C</option>
