@@ -80,14 +80,14 @@ function Sessao() {
               onValueConfirmPasswordChange={handleConfirmPasswordChange}
             />}
           <button className="sign" type="submit" onClick={submit}>
-            {isLoginForm ? "Sign in" : "Sign up"}
+            {isLoginForm ? "Entrar" : "Cadastrar-se"}
           </button>
         </form>
 
         <p className="signup">
-          {isLoginForm ? "Don't have an account?" : "Already have an account?"}
+          {isLoginForm ? "Não possui uma conta?" : "Já possui uma conta?"}
           <a href="#" onClick={toggleForm}>
-            {isLoginForm ? "Sign up" : "Sign in"}
+            {isLoginForm ? "Cadastrar-se" : "Entrar"}
           </a>
         </p>
       </div>

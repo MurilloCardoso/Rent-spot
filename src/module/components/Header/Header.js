@@ -31,9 +31,9 @@ function Header() {
 
   return (
     <header className="header">
-      <nav className="nav">
+      <nav className="nav flex justify-between">
         <Link to="/">
-          <img src={img} className="logo" alt="Logo" />
+         <h1 className="">Testes</h1>
         </Link>
         {isLogged ? (
           <div className="buttons-container">

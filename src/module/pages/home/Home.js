@@ -10,21 +10,19 @@ function Home() {
   const [testes, setTestes] = useState([]);
   const [loading, setLoading] = useState(true); // Definido como true inicialmente
 
- 
-
   useEffect(() => {
     const fetchTestes = async () => {
       try { 
-      if(localStorage.getItem("token") == null &&  localStorage.getItem("username")==null) {
-          navigate("/sessao")
-      }
-        const resultados = await Api.LerTesteCriados();
-        setTestes(resultados);
-      } catch (error) {
-        console.error("Erro ao obter os resultados:", error);
-      } finally {
-        setLoading(false); // Atualiza o estado para false quando os dados são carregados
-      }
+        if(localStorage.getItem("token") == null && localStorage.getItem("username")==null) {
+            navigate("/sessao")
+        }
+          const resultados = await Api.LerTesteCriados();
+          setTestes(resultados);
+        } catch (error) {
+          console.error("Erro ao obter os resultados:", error);
+        } finally {
+          setLoading(false); // Atualiza o estado para false quando os dados são carregados
+        }
     };
 
     fetchTestes();
@@ -48,44 +46,44 @@ function Home() {
     <div>
       <main className="main-home">
         <section className="top-teste">
-          <div>
+          <div className="top-teste-item">
             <ListTile title={"Criar Teste"} url={"/criarTeste"} />
           </div>
-          <div>
+          <div className="top-teste-item">
             <ListTile title={"Resultados"} url={"/resultados"} open={true} />
           </div>
         </section>
-        {loading ? (
-          <Loading />
-        ) : (
-          <>
-            <section>
-              <h1>Testes Criados</h1>
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <section className="testes">
+                <h1>Testes Existentes</h1>
 
-              {testes.length > 0 ? (
-                <div style={{ overflowY: "scroll", maxHeight: "400px" }}>
-                  {testes.map((teste, index) => (
-                    <ListTile
-                      key={teste._id}
-                      title={teste.nomeTeste}
-                      subtitle={teste.autor}
-                      trailing={true}
-                      eventEdit={() => editar(teste._id)}
-                      url={"/responder/" + teste._id}
-                      leading={true}
-                      openResponder={true}
-                      event={() => excluir(teste._id, index)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div>
-                  <h3>Lista de Testes vazia</h3>
-                </div>
-              )}
-            </section>
-          </>
-        )}
+                {testes.length > 0 ? (
+                  <div style={{ overflowY: "hidden", maxHeight: "400px" }}>
+                    {testes.map((teste, index) => (
+                      <ListTile
+                        key={teste._id}
+                        title={teste.nomeTeste}
+                        subtitle={teste.autor}
+                        trailing={true}
+                        eventEdit={() => editar(teste._id)}
+                        url={"/responder/" + teste._id}
+                        leading={true}
+                        openResponder={true}
+                        event={() => excluir(teste._id, index)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div>
+                    <h3>Lista de Testes vazia</h3>
+                  </div>
+                )}
+              </section>
+            </>
+          )}
       </main>
     </div>
   );
